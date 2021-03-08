@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserInfo, updateUserInfo } from "app/Actions";
 
 // Utils
 import axios from "axios";
@@ -6,7 +8,9 @@ import axios from "axios";
 export default function ProductPage(props) {
   const baseURL = process.env.REACT_APP_BASE_URL;
 
-  const [productData, setProductData] = useState(null);
+  const userInfo = useSelector((reduxState) => reduxState.userInfo);
+  const dispatch = useDispatch();
+
   const [trl, setTrl] = useState(null);
   const [showDescription, setShowDescription] = useState(true);
   const [hasUserSection, setHasUserSection] = useState(true);
@@ -26,9 +30,9 @@ export default function ProductPage(props) {
     });
   }
   function handleChangeTRL(theTRL) {
-    setProductData({ ...productData, trl: theTRL });
+    dispatch(updateUserInfo({ trl: theTRL }));
     handleUpdateProduct({
-      ...productData,
+      ...userInfo,
       trl: theTRL,
     });
   }
@@ -37,7 +41,7 @@ export default function ProductPage(props) {
     axios
       .put(`${baseURL}/product/6781`, theProductData)
       .then((res) => {
-        setProductData(res.data);
+        dispatch(updateUserInfo(res.data));
       })
       .catch((err) => {
         console.warn(err);
@@ -48,7 +52,7 @@ export default function ProductPage(props) {
     axios
       .get(`${baseURL}/product/6781`)
       .then((res) => {
-        setProductData(res.data);
+        dispatch(setUserInfo(res.data));
         handleInitMap({
           lat: res.data.company.address.latitude,
           lng: res.data.company.address.longitude,
@@ -84,7 +88,7 @@ export default function ProductPage(props) {
         style={{ width: !hasUserSection ? "100%" : "100%" }}
       >
         <div className="product-page-container__product-image-container">
-          <img src={productData?.picture} alt="" />
+          <img src={userInfo?.picture} alt="" />
         </div>
         <div className="product-page-container__product-main-info-container">
           <div className="product-page-container__product-main-info-container__info">
@@ -92,7 +96,7 @@ export default function ProductPage(props) {
               Title:{" "}
             </div>
             <div className="product-page-container__product-main-info-container__info__name">
-              {productData?.name}
+              {userInfo?.name}
             </div>
           </div>
           <div className="product-page-container__product-main-info-container__info">
@@ -100,7 +104,7 @@ export default function ProductPage(props) {
               Type:{" "}
             </div>
             <div className="product-page-container__product-main-info-container__info__name">
-              {productData?.type?.name}
+              {userInfo?.type?.name}
             </div>
           </div>
         </div>
@@ -121,7 +125,7 @@ export default function ProductPage(props) {
           </div>
           {showDescription && (
             <div className="product-page-container__description-container">
-              {productData?.description}
+              {userInfo?.description}
             </div>
           )}
           {!showDescription && (
@@ -131,9 +135,7 @@ export default function ProductPage(props) {
                   <div className="product-page-container__attribute__title">
                     Categories:{" "}
                   </div>
-                  {productData?.categories.map(
-                    (category) => `${category.name}, `
-                  )}
+                  {userInfo?.categories.map((category) => `${category.name}, `)}
                 </div>
               </div>
               <div className="product-page-container__business-model-container">
@@ -141,7 +143,7 @@ export default function ProductPage(props) {
                   <div className="product-page-container__attribute__title">
                     Business Models:{" "}
                   </div>
-                  {productData?.businessModels.map(
+                  {userInfo?.businessModels.map(
                     (businessModel) => `${businessModel.name}, `
                   )}
                 </div>
@@ -159,7 +161,7 @@ export default function ProductPage(props) {
                           name={theTRL.name}
                           value={theTRL.id}
                           id={theTRL.id}
-                          checked={theTRL.id == productData?.trl.id}
+                          checked={theTRL.id == userInfo?.trl.id}
                           onClick={() => handleChangeTRL(theTRL)}
                         ></input>
                         <span>{theTRL.name}</span>
@@ -176,20 +178,20 @@ export default function ProductPage(props) {
         <div className="product-page-container__user-info-section">
           <div className="product-page-container__user-info-container">
             <div className="product-page-container__user-image-container">
-              <img src={productData?.user.profilePicture} alt="" />
+              <img src={userInfo?.user?.profilePicture} alt="" />
             </div>
             <div className="product-page-container__user-name">
               <div className="product-page-container__user-name__title">
                 Name:{" "}
               </div>
-              {productData?.user.firstName &&
-                `${productData?.user.firstName} ${productData?.user.lastName}`}
+              {userInfo?.user?.firstName &&
+                `${userInfo?.user?.firstName} ${userInfo?.user?.lastName}`}
             </div>
             <div className="product-page-container__company-name">
               <div className="product-page-container__company-name__title">
                 Company:{" "}
               </div>
-              {productData?.company.name}
+              {userInfo?.company?.name}
             </div>
           </div>
           <div className="product-page-container__map-container">
