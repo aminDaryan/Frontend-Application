@@ -1,0 +1,12 @@
+.layout-container {
+  background-color: $background-color;
+  height: 100vh;
+
+  &__content-container {
+    position: relative;
+    margin: 0 auto;
+    margin-top: 55px;
+    max-width: 1440px;
+    display: flex;
+  }
+}

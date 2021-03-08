@@ -1,5 +1,4 @@
 import React from "react";
-import "./LayoutStyle.scss";
 
 // Components
 import TopNavBar from "Components/Layout/TopNavBar/TopNavBar";

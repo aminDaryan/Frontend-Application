@@ -10,40 +10,40 @@ export default function SideBar({ data }) {
   const [selectedTab, setSelectedTab] = useState(0);
 
   return (
-    <div className="sidebar-container">
+    <div className="responsive-sidebar-container">
       <ul>
         <li
-          className={`sidebar-container__tab ${
+          className={`responsive-sidebar-container__tab ${
             selectedTab === 0 ? "active" : ""
           }`}
         >
           <Link
-            className={`sidebar-container__tab__link ${
+            className={`responsive-sidebar-container__tab__link ${
               currentUrl === "/" ? "active" : ""
             }`}
             to="/"
             onClick={() => setSelectedTab(0)}
           >
             <RiHomeLine />
-            <span className="sidebar-container__tab__link__title">
+            <span className="responsive-sidebar-container__tab__link__title">
               Main Page
             </span>
           </Link>
         </li>
         <li
-          className={`sidebar-container__tab ${
+          className={`responsive-sidebar-container__tab ${
             selectedTab === 1 ? "active" : ""
           }`}
         >
           <Link
-            className={`sidebar-container__tab__link ${
+            className={`responsive-sidebar-container__tab__link ${
               currentUrl === "/product" ? "active" : ""
             }`}
             to="/product"
             onClick={() => setSelectedTab(1)}
           >
             <RiBuildingLine />
-            <span className="sidebar-container__tab__link__title">Product</span>
+            <span className="responsive-sidebar-container__tab__link__title">Product</span>
           </Link>
         </li>
       </ul>
