@@ -3,7 +3,7 @@ import { actions } from "./Actions"
 
 const initialState = {}
 
-const userINoState = (state = initialState, action) => {
+const userInfoState = (state = initialState, action) => {
     switch (action.type) {
         case actions.ADD_TO_USER_INFO: {
             return { ...state, ...action.payload }
@@ -16,4 +16,4 @@ const userINoState = (state = initialState, action) => {
     }
 }
 
-export default userINoState;
+export default userInfoState;
