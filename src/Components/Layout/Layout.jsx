@@ -11,8 +11,12 @@ export default function Layout({ children }) {
         <TopNavBar />
       </div>
       <div className="layout-container__content-container">
-        <SideBar data={children.props} />
-        <div>{children}</div>
+        <div className="layout-container__content-container__sidebar">
+          <SideBar data={children.props} />
+        </div>
+        <div className="layout-container__content-container__content">
+          {children}
+        </div>
       </div>
     </div>
   );
