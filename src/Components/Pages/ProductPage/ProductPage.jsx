@@ -152,7 +152,6 @@ export default function ProductPage(props) {
                 </div>
                 <div className="product-page-container__attribute__trl">
                   {trl.map((theTRL) => {
-                    console.log(theTRL);
                     return (
                       <div key={theTRL.id}>
                         <input
