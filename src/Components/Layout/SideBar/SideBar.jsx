@@ -7,7 +7,7 @@ import { RiHomeLine, RiBuildingLine } from "react-icons/ri";
 export default function SideBar({ data }) {
   const currentUrl = data?.match.path;
 
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(currentUrl === "/" ? 0 : 1);
 
   return (
     <div className="sidebar-container">

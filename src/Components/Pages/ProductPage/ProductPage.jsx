@@ -8,7 +8,8 @@ export default function ProductPage(props) {
 
   const [productData, setProductData] = useState(null);
   const [trl, setTrl] = useState(null);
-  const [showDescription, setShowDescription] = useState(false);
+  const [showDescription, setShowDescription] = useState(true);
+  const [hasUserSection, setHasUserSection] = useState(true);
 
   function handleInitMap({ lat, lng }) {
     // The location of company
@@ -24,10 +25,17 @@ export default function ProductPage(props) {
       map: map,
     });
   }
+  function handleChangeTRL(theTRL) {
+    setProductData({ ...productData, trl: theTRL });
+    handleUpdateProduct({
+      ...productData,
+      trl: theTRL,
+    });
+  }
 
-  function handleUpdateProduct() {
+  function handleUpdateProduct(theProductData) {
     axios
-      .put(`${baseURL}/product/6781`)
+      .put(`${baseURL}/product/6781`, theProductData)
       .then((res) => {
         setProductData(res.data);
       })
@@ -58,11 +66,23 @@ export default function ProductPage(props) {
       .catch((err) => {
         console.warn(err);
       });
+
+    axios
+      .get(`${baseURL}/configuration/${process.env.REACT_APP_ID}`)
+      .then((res) => {
+        setHasUserSection(res.data?.hasUserSection);
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
   }, []);
 
   return (
     <div className="product-page-container">
-      <div className="product-page-container__product-info-section">
+      <div
+        className="product-page-container__product-info-section"
+        style={{ width: !hasUserSection ? "100%" : "100%" }}
+      >
         <div className="product-page-container__product-image-container">
           <img src={productData?.picture} alt="" />
         </div>
@@ -86,10 +106,16 @@ export default function ProductPage(props) {
         </div>
         <div className="product-page-container__description-and-attributes-tab-container">
           <div className="product-page-container__toggle-button-container">
-            <button onClick={() => setShowDescription(true)}>
+            <button
+              className={`${showDescription ? "active" : ""}`}
+              onClick={() => setShowDescription(true)}
+            >
               Description
             </button>
-            <button onClick={() => setShowDescription(false)}>
+            <button
+              className={`${!showDescription ? "active" : ""}`}
+              onClick={() => setShowDescription(false)}
+            >
               Attributes
             </button>
           </div>
@@ -109,7 +135,6 @@ export default function ProductPage(props) {
                     (category) => `${category.name}, `
                   )}
                 </div>
-                <div className="product-page-container__adding-categories"></div>
               </div>
               <div className="product-page-container__business-model-container">
                 <div className="product-page-container__attribute">
@@ -120,39 +145,59 @@ export default function ProductPage(props) {
                     (businessModel) => `${businessModel.name}, `
                   )}
                 </div>
-                <div className="product-page-container__adding-businesses"></div>
               </div>
               <div className="product-page-container__trl-container">
                 <div className="product-page-container__attribute__title">
                   TRL:{" "}
                 </div>
                 <div className="product-page-container__attribute__trl">
-                  {productData?.trl?.name}
+                  {trl.map((theTRL) => {
+                    console.log(theTRL);
+                    return (
+                      <div key={theTRL.id}>
+                        <input
+                          type="radio"
+                          name={theTRL.name}
+                          value={theTRL.id}
+                          id={theTRL.id}
+                          checked={theTRL.id == productData?.trl.id}
+                          onClick={() => handleChangeTRL(theTRL)}
+                        ></input>
+                        <span>{theTRL.name}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           )}{" "}
         </div>
       </div>
-      <div className="product-page-container__user-info-section">
-        <div className="product-page-container__user-info-container">
-          <div className="product-page-container__user-image-container">
-            <img src={productData?.user.profilePicture} alt="" />
+      {hasUserSection && (
+        <div className="product-page-container__user-info-section">
+          <div className="product-page-container__user-info-container">
+            <div className="product-page-container__user-image-container">
+              <img src={productData?.user.profilePicture} alt="" />
+            </div>
+            <div className="product-page-container__user-name">
+              <div className="product-page-container__user-name__title">
+                Name:{" "}
+              </div>
+              {productData?.user.firstName &&
+                `${productData?.user.firstName} ${productData?.user.lastName}`}
+            </div>
+            <div className="product-page-container__company-name">
+              <div className="product-page-container__company-name__title">
+                Company:{" "}
+              </div>
+              {productData?.company.name}
+            </div>
           </div>
-          <div className="product-page-container__user-name">
-            <div className="product-page-container__user-name__title">Name: </div>
-            {productData?.user.firstName &&
-              `${productData?.user.firstName} ${productData?.user.lastName}`}
-          </div>
-          <div className="product-page-container__company-name">
-            <div className="product-page-container__company-name__title">Company: </div>
-            {productData?.company.name}
+          <div className="product-page-container__map-container">
+            <div id="map"></div>
           </div>
         </div>
-        <div className="product-page-container__map-container">
-          <div id="map"></div>
-        </div>
-      </div>
+      )}{" "}
     </div>
   );
 }
